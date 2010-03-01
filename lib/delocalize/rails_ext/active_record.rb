@@ -10,38 +10,22 @@ ActiveRecord::ConnectionAdapters::Column.class_eval do
 end
 
 ActiveRecord::Base.class_eval do
-  def write_attribute_with_localization(attr_name, value)
-    if column = column_for_attribute(attr_name.to_s)
-      if column.date?
-        value = Date.parse_localized(value)
-      elsif column.time?
-        value = Time.parse_localized(value)
-      elsif column.number?
-        value = column.type_cast(convert_number_column_value_with_localization(value))
-      end
-    end
-    write_attribute_without_localization(attr_name, value)
-  end
-  alias_method_chain :write_attribute, :localization
-
-  # ugh
-  def self.define_write_method_for_time_zone_conversion(attr_name)
-    method_body = <<-EOV
-      def #{attr_name}=(time)
-        unless time.acts_like?(:time)
-          time = time.is_a?(String) ? (I18n.delocalization_enabled? ? Time.zone.parse_localized(time) : Time.zone.parse(time)) : time.to_time rescue time
-        end
-        time = time.in_time_zone rescue nil if time
-        write_attribute(:#{attr_name}, time)
-      end
-    EOV
-    evaluate_attribute_method attr_name, method_body, "#{attr_name}="
-  end
-
   def convert_number_column_value_with_localization(value)
-    value = convert_number_column_value_without_localization(value)
-    value = Numeric.parse_localized(value) if I18n.delocalization_enabled?
+    if I18n.delocalization_enabled?
+      value = Numeric.parse_localized(value)
+    else
+      value = convert_number_column_value_without_localization(value)
+    end
     value
   end
   alias_method_chain :convert_number_column_value, :localization
+end
+
+column_class = ActiveRecord::ConnectionAdapters::Column
+def column_class.string_to_date(value)
+  Date.parse_localized(value)
+end
+
+def column_class.string_to_time(value)
+  Time.parse_localized(value)
 end

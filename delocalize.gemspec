@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{delocalize}
-  s.version = "0.1.4"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Clemens Kofler"]
+  s.authors = ["Clemens Kofler", "Marcin Raczkowski"]
   s.date = %q{2009-12-25}
   s.description = %q{Delocalize is a tool for parsing localized dates/times and numbers.}
-  s.email = %q{clemens@railway.at}
+  s.email = %q{clemens@railway.at marcin.raczkowski@gmail.com}
   s.extra_rdoc_files = [
     "README"
   ]
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
      "lib/delocalize/rails_ext/action_view.rb",
      "lib/delocalize/rails_ext/active_record.rb",
      "lib/delocalize/rails_ext/time_zone.rb",
+     "lib/delocalize/rails_ext/validation.rb",
      "lib/delocalize/ruby_ext.rb",
      "lib/delocalize/ruby_ext/date.rb",
      "lib/delocalize/ruby_ext/datetime.rb",

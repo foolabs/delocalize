@@ -3,14 +3,22 @@
 module Delocalize
   class LocalizedNumericParser
     class << self
-      # Parse numbers removing unneeded characters and replacing decimal separator
-      # through I18n. This will return a valid Ruby Numeric value (as String).
+      # Parse numbers replacing locale specific delimeters and separators with
+      # standard ruby _ and .
       def parse(value)
-        if value.is_a?(String)
+        if value == false
+          0
+        elsif value == true
+          1
+        elsif value.is_a?(String) && value.blank?
+          nil
+        elsif value.is_a?(String)
           separator = I18n.t(:'number.format.separator')
-          value = value.gsub(/[^0-9\-#{separator}]/, '').gsub(separator, '.')
+          delimeter = I18n.t(:'number.format.delimiter')
+          value.strip.tr("#{separator}#{delimeter}", "._")
+        else
+          value
         end
-        value
       end
     end
   end
