@@ -1,5 +1,4 @@
 ENV["RAILS_ENV"] = "test"
-#require File.expand_path(File.dirname(__FILE__) + "/../../../../config/environment")
 require File.expand_path(File.dirname(__FILE__) + "/rails_app/config/environment")
 require 'test_help'
 
@@ -67,6 +66,7 @@ ActiveRecord::Base.connection.create_table :products do |t|
   t.date :released_on
   t.datetime :published_at
   t.time :cant_think_of_a_sensible_time_field
+  t.timestamp :the_timestamp
   t.decimal :price
   t.float :weight
   t.integer :times_sold

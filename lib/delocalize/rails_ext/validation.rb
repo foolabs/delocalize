@@ -68,4 +68,24 @@ module ActiveRecord::Validations::ClassMethods
       end
     end
   end
+
+  def validates_date_format_of(*attr_names)
+    configuration = { :on => :save, :allow_nil => false }
+    configuration.update(attr_names.extract_options!)
+
+    validates_each(attr_names,configuration) do |record, attr_name, value|
+      raw_value = record.send("#{attr_name}_before_type_cast") || value
+      Delocalize::LocalizedDateTimeParser.valid_format?(raw_value, Date)
+    end
+  end
+
+  def validates_time_format_of(*attr_names)
+    configuration = { :on => :save, :allow_nil => false }
+    configuration.update(attr_names.extract_options!)
+
+    validates_each(attr_names,configuration) do |record, attr_name, value|
+      raw_value = record.send("#{attr_name}_before_type_cast") || value
+      Delocalize::LocalizedDateTimeParser.valid_format?(raw_value, Time)
+    end
+  end
 end
