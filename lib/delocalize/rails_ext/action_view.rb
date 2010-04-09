@@ -14,16 +14,15 @@ ActionView::Helpers::InstanceTag.class_eval do
         value = object.send(method_name)
 
         if column.number?
-          number_options = I18n.t(:'number.format')
-          separator = options.delete(:separator) || number_options[:separator]
-          delimiter = options.delete(:delimiter) || number_options[:delimiter]
-          precision = options.delete(:precision) || number_options[:precision]
-          opts = { :separator => separator, :delimiter => delimiter, :precision => precision }
-          # integers don't need a precision
-          opts.merge!(:precision => 0) if column.type == :integer
-
           # formats the number only if it has errors
           if object.respond_to?(:errors) && !object.errors.invalid?(method_name)
+            number_options = I18n.t(:'number.format')
+            separator = options.delete(:separator) || number_options[:separator]
+            delimiter = options.delete(:delimiter) || number_options[:delimiter]
+            precision = options.delete(:precision) || number_options[:precision]
+            opts = { :separator => separator, :delimiter => delimiter, :precision => precision }
+            # integers don't need a precision
+            opts.merge!(:precision => 0) if column.type == :integer
             options[:value] = number_with_precision(value, opts)
           end
         elsif column.date? || column.time?
