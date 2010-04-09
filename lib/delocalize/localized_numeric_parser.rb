@@ -6,18 +6,29 @@ module Delocalize
       # Parse numbers replacing locale specific delimeters and separators with
       # standard ruby _ and .
       def parse(value)
-        if value == false
-          0
-        elsif value == true
-          1
-        elsif value.is_a?(String) && value.blank?
-          nil
-        elsif value.is_a?(String)
+        if value.is_a?(String)
           separator = I18n.t(:'number.format.separator')
           delimeter = I18n.t(:'number.format.delimiter')
-          value.strip.tr("#{separator}#{delimeter}", "._")
+          delocalized_value = value.strip.tr("#{separator}#{delimeter}", "._")
+          # try to parse the delocalized string to a number
+          if is_numerical?(delocalized_value)
+            delocalized_value
+          else
+            # if the delocalized string is not parsable to a number
+            # return the original so that <attribute>_before_type_cast is preserved
+            value
+          end
         else
           value
+        end
+      end
+
+      def is_numerical?(string)
+        begin
+          Float(string)
+          true
+        rescue
+          false
         end
       end
     end

@@ -12,10 +12,11 @@ end
 
 ActiveRecord::Base.class_eval do
   def convert_number_column_value_with_localization(value)
+    converted_value = convert_number_column_value_without_localization(value)
     if I18n.delocalization_enabled?
-      Numeric.parse_localized(value)
+      Numeric.parse_localized(converted_value)
     else
-      convert_number_column_value_without_localization(value)
+      converted_value
     end
   end
   alias_method_chain :convert_number_column_value, :localization
